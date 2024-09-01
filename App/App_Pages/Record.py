@@ -3,7 +3,7 @@ from PIL import Image
 import streamlit as st
 import os
 
-
+# Mapping of Baybayin characters to image filenames
 baybayin_image_mapping = {
     'a': 'A.png', 'e': 'E.png', 'i': 'I.png', 'o': 'O.png', 'u': 'U.png',
     'ka': 'ka.png', 'ga': 'ga.png', 'nga': 'nga.png', 'ta': 'ta.png', 'da': 'da.png',
@@ -56,18 +56,21 @@ def text_to_baybayin_images(text):
                 baybayin_images.append(image_filename)
     return baybayin_images
 
-def render_images_to_image(baybayin_images, output_file, image_dir='/mount/src/fbvrs-capstone-project/App/App_Pages/Image', padding=20):
+def render_images_to_image(baybayin_images, output_file, image_dir='App/App_Pages/Image', padding=20):
     images = []
+    image_dir = os.path.join(os.path.dirname(__file__), image_dir)
     for img_name in baybayin_images:
-        img_path = os.path.join(os.path.dirname(__file__), image_dir, img_name)
+        img_path = os.path.join(image_dir, img_name)
         print(f"Attempting to load image: {img_path}")  # Debug statement
         try:
             img = Image.open(img_path)
             images.append(img)
         except FileNotFoundError:
             st.error(f"Image file '{img_name}' not found in directory '{image_dir}'.")
+            print(f"FileNotFoundError: Image file '{img_name}' not found in directory '{image_dir}'.")
         except Exception as e:
             st.error(f"Error loading image '{img_name}': {e}")
+            print(f"Exception: Error loading image '{img_name}': {e}")
 
     if not images:
         st.error("No valid images were loaded to create the output image.")
@@ -97,10 +100,9 @@ def render_images_to_image(baybayin_images, output_file, image_dir='/mount/src/f
         return None
         
 print("Current working directory:", os.getcwd())
-        
+print("Files in image directory:", os.listdir('/mount/src/fbvrs-capstone-project/App/App_Pages/Image'))
 
 def app():
-    
     st.title("Baybayin Transcription from Audio")
 
     uploaded_file = st.file_uploader("Upload an audio file", type=["wav", "mp3", "flac"])
@@ -117,19 +119,11 @@ def app():
         text = audio_to_text(temp_audio_file)
         st.write(f"Transcribed Text: {text}")
 
-        if not text.strip():
-            st.write("The transcribed text is empty or invalid.")
-            return
-        
         baybayin_images = text_to_baybayin_images(text)
-        if baybayin_images:
-            combined_image = render_images_to_image(baybayin_images, 'output_image.png', image_dir='Image')
-            st.image(combined_image, caption='Baybayin Transcription')
-        else:
-            st.write("No Baybayin images found for the transcribed text.")
+        output_image = render_images_to_image(baybayin_images, "output_image.png")
 
-        if os.path.exists(temp_audio_file):
-            os.remove(temp_audio_file)
-            
+        if output_image:
+            st.image(output_image, caption="Baybayin Transcription")
+
 if __name__ == "__main__":
     app()
