@@ -2,7 +2,6 @@ import speech_recognition as sr
 from PIL import Image
 import streamlit as st
 import os
-print("Current working directory:", os.getcwd())
 
 
 baybayin_image_mapping = {
@@ -96,6 +95,8 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image', padd
     except Exception as e:
         st.error(f"Error saving the output image: {e}")
         return None
+        
+print("Current working directory:", os.getcwd())
         
 
 def app():
