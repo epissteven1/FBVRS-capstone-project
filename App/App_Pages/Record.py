@@ -56,7 +56,7 @@ def text_to_baybayin_images(text):
                 baybayin_images.append(image_filename)
     return baybayin_images
 
-def render_images_to_image(baybayin_images, output_file, image_dir='Image', padding=20):
+def render_images_to_image(baybayin_images, output_file, image_dir='/mount/src/fbvrs-capstone-project/App/App_Pages/Image', padding=20):
     images = []
     for img_name in baybayin_images:
         img_path = os.path.join(os.path.dirname(__file__), image_dir, img_name)
