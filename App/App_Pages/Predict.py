@@ -101,19 +101,31 @@ def apply_canny_edge_detection(image):
     return mask
 
 
+def remove_background(image):
+    image = image.convert("RGBA")
+    data = np.array(image)
+
+    # Assuming white background; adjust the color threshold as needed
+    r, g, b, a = data[:, :, 0], data[:, :, 1], data[:, :, 2], data[:, :, 3]
+    white_areas = (r > 200) & (g > 200) & (b > 200)
+    data[:, :, 3][white_areas] = 0
+
+    return Image.fromarray(data)
+
+
 def render_images_to_image(baybayin_images, output_file, image_dir='Image'):
     if not baybayin_images:
         return None, None
-    images = [Image.open(os.path.join(image_dir, img)) for img in baybayin_images]
+    images = [remove_background(Image.open(os.path.join(image_dir, img))) for img in baybayin_images]
     widths, heights = zip(*(i.size for i in images))
     total_width = sum(widths)
     max_height = max(heights)
-    new_image = Image.new('RGB', (total_width, max_height))
+    new_image = Image.new('RGBA', (total_width, max_height))
     x_offset = 0
     for img in images:
-        new_image.paste(img, (x_offset, 0))
+        new_image.paste(img, (x_offset, 0), img)
         x_offset += img.width
-    new_image.save(output_file)
+    new_image.save(output_file, "PNG")
     return new_image, output_file
 
 
