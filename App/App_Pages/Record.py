@@ -59,7 +59,7 @@ def text_to_baybayin_images(text):
 def render_images_to_image(baybayin_images, output_file, image_dir='Image', padding=20):
     images = []
     for img_name in baybayin_images:
-        img_path = os.path.join(image_dir, img_name)
+        img_path = os.path.join(os.path.dirname(__file__), image_dir, img_name)
         print(f"Attempting to load image: {img_path}")  # Debug statement
         try:
             img = Image.open(img_path)
