@@ -57,10 +57,8 @@ def text_to_baybayin_images(text):
 
 def render_images_to_image(baybayin_images, output_file, image_dir='Image', padding=20):
     images = []
-    app_dir = os.path.dirname(os.path.dirname(__file__))
-    
     for img_name in baybayin_images:
-        img_path = os.path.join(app_dir, image_dir, img_name)
+        img_path = os.path.join(image_dir, img_name)
         try:
             img = Image.open(img_path)
             images.append(img)
@@ -124,6 +122,17 @@ def app():
         if os.path.exists(temp_audio_file):
             os.remove(temp_audio_file)
             
+
+
+# Go up one directory from the current script location to access the 'App' directory
+app_dir = os.path.dirname(os.path.dirname(__file__))
+
+# Construct the path to the 'Image' directory inside 'App'
+image_path = os.path.join(app_dir, "Image", "Ga.png")
+
+st.write("Constructed Image Path:", image_path)
+st.image(image_path)
+
 
 if __name__ == "__main__":
     app()
