@@ -56,7 +56,7 @@ def text_to_baybayin_images(text):
                 baybayin_images.append(image_filename)
     return baybayin_images
 
-def render_images_to_image(baybayin_images, output_file, image_dir='App/App_Pages/Image', padding=20):
+def render_images_to_image(baybayin_images, output_file, image_dir='App/Image', padding=20):
     images = []
     # Ensure the image_dir is an absolute path
     image_dir = os.path.abspath(image_dir)
