@@ -60,6 +60,9 @@ def render_images_to_image(baybayin_images, output_file, image_dir='App/App_Page
     images = []
     # Ensure the image_dir is an absolute path
     image_dir = os.path.abspath(image_dir)
+    print(f"Current working directory: {os.getcwd()}")  # Debug statement
+    print(f"Absolute path of image directory: {image_dir}")  # Debug statement
+
     for img_name in baybayin_images:
         img_path = os.path.join(image_dir, img_name)
         print(f"Attempting to load image: {img_path}")  # Debug statement
@@ -100,6 +103,7 @@ def render_images_to_image(baybayin_images, output_file, image_dir='App/App_Page
         st.error(f"Error saving output image: {e}")
         print(f"Exception: Error saving output image: {e}")
         return None
+
 
 def app():
     st.title("Baybayin Transcription from Audio")
