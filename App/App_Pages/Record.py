@@ -97,8 +97,6 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image', padd
         st.error(f"Error saving the output image: {e}")
         return None
         
-base_dir = os.path.dirname(__file__)
-img_path = os.path.join(base_dir, 'Image', img_name)
 
 def app():
     
