@@ -122,7 +122,7 @@ def app():
         if os.path.exists(temp_audio_file):
             os.remove(temp_audio_file)
             
-  st.image("Image/ga.png")          
+st.image("Image/ga.png")          
 
 if __name__ == "__main__":
     app()
