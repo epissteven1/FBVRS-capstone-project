@@ -1,7 +1,9 @@
-import os
 import speech_recognition as sr
 from PIL import Image
 import streamlit as st
+import os
+print("Current working directory:", os.getcwd())
+
 
 baybayin_image_mapping = {
     'a': 'A.png', 'e': 'E.png', 'i': 'I.png', 'o': 'O.png', 'u': 'U.png',
@@ -59,6 +61,7 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image', padd
     images = []
     for img_name in baybayin_images:
         img_path = os.path.join(image_dir, img_name)
+        print(f"Attempting to load image: {img_path}")  # Debug statement
         try:
             img = Image.open(img_path)
             images.append(img)
@@ -88,15 +91,17 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image', padd
 
     try:
         background.save(output_file)
+        print(f"Output image saved as: {output_file}")  # Debug statement
         return background
     except Exception as e:
         st.error(f"Error saving the output image: {e}")
         return None
-
+        
+base_dir = os.path.dirname(__file__)
+img_path = os.path.join(base_dir, 'Image', img_name)
 
 def app():
     
-
     st.title("Baybayin Transcription from Audio")
 
     uploaded_file = st.file_uploader("Upload an audio file", type=["wav", "mp3", "flac"])
