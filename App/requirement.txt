@@ -4,5 +4,5 @@ numpy
 Pillow
 Keras
 streamlit-option-menu
-SpeechRecognition
+SpeechRecognition==3.10.4
 
