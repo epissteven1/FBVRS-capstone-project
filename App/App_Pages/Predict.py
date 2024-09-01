@@ -130,38 +130,71 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image'):
 
 
 class AudioProcessor(AudioProcessorBase):
-    def __init__(self):
-        self.recognizer = sr.Recognizer()
-
     def recv(self, frame):
-        # Convert the audio frame to numpy array and reduce noise
-        audio_np = frame.to_ndarray()
-        st.write("Audio frame received for processing.")  # Debugging line
-        reduced_noise = nr.reduce_noise(y=audio_np, sr=frame.sample_rate)
-        
-        # Convert the numpy array back to AudioData for recognition
+        audio_data = frame.to_ndarray()
+        audio_data = np.frombuffer(audio_data, dtype=np.int16)
+        reduced_noise = nr.reduce_noise(y=audio_data, sr=frame.sample_rate)
         audio_data = sr.AudioData(reduced_noise.tobytes(), frame.sample_rate, 2)
-
-        try:
-            text = self.recognizer.recognize_google(audio_data, language='tl-PH')
-            st.write(f"Recognized Text: {text}")
-            baybayin_images = text_to_baybayin_images(text)
-            for image_filename in baybayin_images:
-                image_path = os.path.join('Image', image_filename)
-                image = Image.open(image_path)
-                st.image(image, caption=image_filename)
-        except sr.UnknownValueError:
-            st.write("Could not understand audio")
-        except sr.RequestError as e:
-            st.write(f"Could not request results; {e}")
-        
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(audio_data) as source:
+            audio = recognizer.record(source)
+            try:
+                text = recognizer.recognize_google(audio, language='tl-PH')
+                st.write(f"Recognized Text: {text}")
+                baybayin_images = text_to_baybayin_images(text)
+                for image_filename in baybayin_images:
+                    image_path = os.path.join('Image', image_filename)
+                    image = Image.open(image_path)
+                    st.image(image, caption=image_filename)
+            except sr.UnknownValueError:
+                st.write("Could not understand audio")
+            except sr.RequestError as e:
+                st.write(f"Could not request results; {e}")
         return frame
 
-def app():
-    st.title("Filipino-to-Baybayin Voice Recognition System")
 
-    st.subheader("WebRTC-Based Audio Processing")
-    webrtc_streamer(key="example", mode=WebRtcMode.SENDRECV, audio_processor_factory=AudioProcessor)
+webrtc_streamer(key="example", mode=WebRtcMode.SENDRECV, audio_processor_factory=AudioProcessor)
+
+
+def app():
+    recognizer = sr.Recognizer()
+    microphone = sr.Microphone()
+
+    if st.button("Start Listening"):
+        st.write("Listening...")
+        with microphone as source:
+            recognizer.adjust_for_ambient_noise(source)
+            try:
+                # Listen with a timeout of 10 seconds, and auto-stop if no real voice is detected
+                audio = recognizer.listen(source, timeout=10, phrase_time_limit=10)
+
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
+                    f.write(audio.get_wav_data())
+                    temp_audio_file = f.name
+
+                text = audio_to_text(temp_audio_file)
+                st.write(f"Transcribed Text: {text}")
+
+                baybayin_images = text_to_baybayin_images(text)
+                combined_image, image_base64 = render_images_to_image(baybayin_images, 'output_image.png',
+                                                                      image_dir='Image')
+
+                if combined_image:
+                    image_base64 = image_to_base64(combined_image)
+                    st.markdown(
+                        f"""    
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <img src="data:image/png;base64,{image_base64}" alt="Baybayin Transcription" />
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+                else:
+                    st.write("Failed to convert image to Base64")
+
+            except sr.WaitTimeoutError:
+                st.write("No real voice detected within 10 seconds. Stopping the listener.")
+
 
 if __name__ == "__main__":
     app()
