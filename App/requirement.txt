@@ -4,3 +4,4 @@ numpy
 Pillow
 Keras
 streamlit-option-menu 
+speech_recognition
