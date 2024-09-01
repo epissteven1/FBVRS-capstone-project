@@ -1,0 +1,10 @@
+2024-04-25 06:03:49,874 - WARNING - From C:\Users\steve\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\backend\common\global_state.py:73: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
+2024-04-29 11:08:54,958 - WARNING - From C:\Users\steve\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\backend\common\global_state.py:73: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
+2024-04-29 14:22:16,838 - WARNING - From C:\Users\steve\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\backend\common\global_state.py:73: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
+2024-04-29 14:31:12,750 - WARNING - From C:\Users\steve\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\backend\common\global_state.py:73: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
+2024-05-07 13:14:46,224 - WARNING - From C:\Users\steve\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\backend\common\global_state.py:73: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
