@@ -125,9 +125,17 @@ def app():
 
 
 
-script_dir = os.path.dirname(__file__)  # Directory of the script
-image_path = os.path.join(script_dir, "Image", "ga.png")
+
+
+# Go up one directory from the current script location to access the 'App' directory
+script_dir = os.path.dirname(__file__)
+app_dir = os.path.dirname(script_dir)
+
+# Construct the path to the 'Image' directory inside 'App'
+image_path = os.path.join(app_dir, "Image", "ga.png")
+
 st.image(image_path)
+
 
 
 
