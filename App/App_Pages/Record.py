@@ -63,14 +63,14 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image', padd
             img = Image.open(img_path)
             images.append(img)
         except FileNotFoundError:
-            st.error(f"Image file {img_name} not found in directory '{image_dir}'.")
+            st.error(f"Image file '{img_name}' not found in directory '{image_dir}'.")
         except Exception as e:
-            st.error(f"Error loading image {img_name}: {e}")
+            st.error(f"Error loading image '{img_name}': {e}")
 
     if not images:
         st.error("No valid images were loaded to create the output image.")
         return None
-    
+
     total_width = sum(img.width for img in images)
     max_height = max(img.height for img in images)
 
@@ -86,8 +86,13 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image', padd
 
     background.paste(combined_image, (padding, padding))
 
-    background.save(output_file)
-    return background
+    try:
+        background.save(output_file)
+        return background
+    except Exception as e:
+        st.error(f"Error saving the output image: {e}")
+        return None
+
 
 def app():
     
