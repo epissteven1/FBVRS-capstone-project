@@ -58,7 +58,8 @@ def text_to_baybayin_images(text):
 
 def render_images_to_image(baybayin_images, output_file, image_dir='App/App_Pages/Image', padding=20):
     images = []
-    image_dir = os.path.join(os.path.dirname(__file__), image_dir)
+    # Ensure the image_dir is an absolute path
+    image_dir = os.path.abspath(image_dir)
     for img_name in baybayin_images:
         img_path = os.path.join(image_dir, img_name)
         print(f"Attempting to load image: {img_path}")  # Debug statement
