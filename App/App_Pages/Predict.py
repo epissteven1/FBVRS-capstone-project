@@ -159,49 +159,6 @@ class AudioProcessor(AudioProcessorBase):
 def app():
     st.title("Filipino-to-Baybayin Voice Recognition System")
 
-    # Check if PyAudio is installed
-    try:
-        recognizer = sr.Recognizer()
-        microphone = sr.Microphone()
-
-        if st.button("Start Listening (with Microphone)"):
-            st.write("Listening...")
-            with microphone as source:
-                recognizer.adjust_for_ambient_noise(source)
-                try:
-                    # Listen with a timeout of 10 seconds, and auto-stop if no real voice is detected
-                    audio = recognizer.listen(source, timeout=10, phrase_time_limit=10)
-
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
-                        f.write(audio.get_wav_data())
-                        temp_audio_file = f.name
-
-                    text = audio_to_text(temp_audio_file)
-                    st.write(f"Transcribed Text: {text}")
-
-                    baybayin_images = text_to_baybayin_images(text)
-                    combined_image, image_base64 = render_images_to_image(baybayin_images, 'output_image.png',
-                                                                          image_dir='Image')
-
-                    if combined_image:
-                        image_base64 = image_to_base64(combined_image)
-                        st.markdown(
-                            f"""    
-                            <div style="display: flex; justify-content: center; align-items: center;">
-                                <img src="data:image/png;base64,{image_base64}" alt="Baybayin Transcription" />
-                            </div>
-                            """,
-                            unsafe_allow_html=True
-                        )
-                    else:
-                        st.write("Failed to convert image to Base64")
-
-                except sr.WaitTimeoutError:
-                    st.write("No real voice detected within 10 seconds. Stopping the listener.")
-
-    except AttributeError:
-        st.write("PyAudio is not installed. Please use the WebRTC-based audio processing below:")
-
     st.subheader("WebRTC-Based Audio Processing")
     webrtc_streamer(key="example", mode=WebRtcMode.SENDRECV, audio_processor_factory=AudioProcessor)
 
