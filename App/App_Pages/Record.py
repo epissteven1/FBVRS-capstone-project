@@ -123,7 +123,7 @@ def app():
             os.remove(temp_audio_file)
             
 
-st.image("App/Image/ga.png")
+st.image('App/Image/ga.png')
 
 
 if __name__ == "__main__":
