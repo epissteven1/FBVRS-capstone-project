@@ -3,26 +3,29 @@ import speech_recognition as sr
 from PIL import Image
 import streamlit as st
 
-
-# Mapping from syllable to image filename
 baybayin_image_mapping = {
     'a': 'A.png', 'e': 'E.png', 'i': 'I.png', 'o': 'O.png', 'u': 'U.png',
     'ka': 'ka.png', 'ga': 'ga.png', 'nga': 'nga.png', 'ta': 'ta.png', 'da': 'da.png',
-    'na': 'na.png', 'pa': 'pa.png', 'ba': 'Ba.png', 'ma': 'ma.png', 'ya': 'ya.png',
+    'na': 'na.png', 'pa': 'pa.png', 'ba': 'ba.png', 'ma': 'ma.png', 'ya': 'ya.png',
     'ra': 'ra.png', 'la': 'la.png', 'wa': 'wa.png', 'sa': 'sa.png', 'ha': 'ha.png'
 }
 
 def audio_to_text(audio_file):
+    if not os.path.exists(audio_file):
+        return "Audio file not found."
+    
     recognizer = sr.Recognizer()
-    with sr.AudioFile(audio_file) as source:
-        audio_data = recognizer.record(source)
     try:
-        text = recognizer.recognize_google(audio_data, language='tl-PH')  # Tagalog
+        with sr.AudioFile(audio_file) as source:
+            audio_data = recognizer.record(source)
+        text = recognizer.recognize_google(audio_data, language='tl-PH')
         return text
     except sr.UnknownValueError:
         return "Could not understand audio"
     except sr.RequestError as e:
         return f"Could not request results; {e}"
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 def split_into_syllables(word):
     vowels = 'aeiou'
@@ -52,28 +55,26 @@ def text_to_baybayin_images(text):
                 baybayin_images.append(image_filename)
     return baybayin_images
 
-
 def render_images_to_image(baybayin_images, output_file, image_dir='Image', padding=20):
     images = []
     for img_name in baybayin_images:
+        img_path = os.path.join(image_dir, img_name)
         try:
-            img = Image.open(os.path.join(image_dir, img_name))
+            img = Image.open(img_path)
             images.append(img)
         except FileNotFoundError:
-            st.error(f"Image file {img_name} not found in {image_dir}.")
+            st.error(f"Image file {img_name} not found in directory '{image_dir}'.")
         except Exception as e:
             st.error(f"Error loading image {img_name}: {e}")
 
     if not images:
         st.error("No valid images were loaded to create the output image.")
         return None
-
-    # Rest of the code remains the same...
+    
     total_width = sum(img.width for img in images)
     max_height = max(img.height for img in images)
 
     combined_image = Image.new('RGB', (total_width, max_height), 'white')
-
     x_offset = 0
     for img in images:
         combined_image.paste(img, (x_offset, 0))
@@ -94,25 +95,30 @@ def app():
     uploaded_file = st.file_uploader("Upload an audio file", type=["wav", "mp3", "flac"])
 
     if uploaded_file is not None:
-        # Save the uploaded file to a temporary file
         temp_audio_file = "temp_audio_file.wav"
-        with open(temp_audio_file, "wb") as f:
-            f.write(uploaded_file.getbuffer())
+        try:
+            with open(temp_audio_file, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+        except Exception as e:
+            st.error(f"Error saving the uploaded audio file: {e}")
+            return
 
-        # Transcribe the audio file to text
         text = audio_to_text(temp_audio_file)
         st.write(f"Transcribed Text: {text}")
 
-        # Convert text to Baybayin images
+        if not text.strip():
+            st.write("The transcribed text is empty or invalid.")
+            return
+        
         baybayin_images = text_to_baybayin_images(text)
         if baybayin_images:
-            # Render the images into a single image
             combined_image = render_images_to_image(baybayin_images, 'output_image.png', image_dir='Image')
-
-            # Display the final image
             st.image(combined_image, caption='Baybayin Transcription')
         else:
             st.write("No Baybayin images found for the transcribed text.")
+
+        if os.path.exists(temp_audio_file):
+            os.remove(temp_audio_file)
 
 if __name__ == "__main__":
     app()
