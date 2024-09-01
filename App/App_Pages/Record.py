@@ -3,6 +3,9 @@ import speech_recognition as sr
 from PIL import Image
 import streamlit as st
 
+# Set page config at the very start
+st.set_page_config(page_title="Baybayin Transcription", page_icon=":microphone:", layout="wide")
+
 baybayin_image_mapping = {
     'a': 'A.png', 'e': 'E.png', 'i': 'I.png', 'o': 'O.png', 'u': 'U.png',
     'ka': 'ka.png', 'ga': 'ga.png', 'nga': 'nga.png', 'ta': 'ta.png', 'da': 'da.png',
@@ -92,8 +95,6 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image', padd
     return background
 
 def app():
-    
-
     st.title("Baybayin Transcription from Audio")
 
     uploaded_file = st.file_uploader("Upload an audio file", type=["wav", "mp3", "flac"])
@@ -123,18 +124,6 @@ def app():
 
         if os.path.exists(temp_audio_file):
             os.remove(temp_audio_file)
-            
-
-
-# Go up one directory from the current script location to access the 'App' directory
-app_dir = os.path.dirname(os.path.dirname(__file__))
-
-# Construct the path to the 'Image' directory inside 'App'
-image_path = os.path.join(app_dir, "Image", "Ga.png")
-
-st.write("Constructed Image Path:", image_path)
-st.image(image_path)
-
 
 if __name__ == "__main__":
     app()
