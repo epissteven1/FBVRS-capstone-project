@@ -33,7 +33,7 @@ def app():
         """, unsafe_allow_html=True)
 
     # Directly load and display the image using Streamlit's st.image
-    st.image(image="App_Images/Baybayin.jpg", use_column_width=True)
+    st.image(image="https://mir-s3-cdn-cf.behance.net/project_modules/fs/734f0d84245339.5d56863298024.jpg", use_column_width=True)
 
     st.markdown("""
             <style>
