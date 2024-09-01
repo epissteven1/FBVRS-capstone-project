@@ -8,6 +8,7 @@ from io import BytesIO
 import cv2
 import numpy as np
 import noisereduce as nr  # Noise reduction library
+from streamlit_webrtc import webrtc_streamer, AudioProcessorBase, WebRtcMode
 
 # Mapping from syllable to image filename
 baybayin_image_mapping = {
@@ -29,14 +30,12 @@ baybayin_image_mapping = {
     'ye': 'Ye.png', 'yi': 'Yi.png', 'yo': 'Yo.png', 'yu': 'Yu.png'
 }
 
-
 def reduce_noise(audio_data):
     # Convert audio to numpy array
     audio_np = np.frombuffer(audio_data.get_raw_data(), dtype=np.int16)
     # Reduce noise using the noisereduce library
     reduced_noise = nr.reduce_noise(y=audio_np, sr=audio_data.sample_rate)
     return sr.AudioData(reduced_noise.tobytes(), audio_data.sample_rate, audio_data.sample_width)
-
 
 def audio_to_text(audio_file):
     recognizer = sr.Recognizer()
@@ -52,7 +51,6 @@ def audio_to_text(audio_file):
         return "Could not understand audio"
     except sr.RequestError as e:
         return f"Could not request results; {e}"
-
 
 def split_into_syllables(word):
     vowels = 'aeiou'
@@ -71,7 +69,6 @@ def split_into_syllables(word):
         syllables.append(current_syllable)
     return syllables
 
-
 def text_to_baybayin_images(text):
     words = text.split()
     baybayin_images = []
@@ -83,12 +80,10 @@ def text_to_baybayin_images(text):
                 baybayin_images.append(image_filename)
     return baybayin_images
 
-
 def image_to_base64(image):
     buffered = BytesIO()
     image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode()
-
 
 def apply_canny_edge_detection(image):
     # Convert image to grayscale
@@ -99,80 +94,42 @@ def apply_canny_edge_detection(image):
     mask = Image.fromarray(edges)
     return mask
 
-
 def render_images_to_image(baybayin_images, output_file, image_dir='Image'):
     if not baybayin_images:
         return None, None
-
-    # Load the images
-    images = [Image.open(os.path.join(image_dir, img)).convert("RGBA") for img in baybayin_images]
-
-    if not images:
-        return None, None
-
-    # Apply edge detection and transparency
-    for i in range(len(images)):
-        edge_mask = apply_canny_edge_detection(images[i])
-        images[i].putalpha(edge_mask)
-
-    # Calculate the total width and height for the final image
-    total_width = sum(img.width for img in images)
-    max_height = max(img.height for img in images)
-
-    # Create a new blank image with the calculated dimensions
-    combined_image = Image.new('RGBA', (total_width, max_height), (255, 255, 255, 0))
-
-    # Paste each image onto the blank image, centering them vertically
+    images = [Image.open(os.path.join(image_dir, img)) for img in baybayin_images]
+    widths, heights = zip(*(i.size for i in images))
+    total_width = sum(widths)
+    max_height = max(heights)
+    new_image = Image.new('RGB', (total_width, max_height))
     x_offset = 0
     for img in images:
-        y_offset = (max_height - img.height) // 2  # Center the image vertically
-        combined_image.paste(img, (x_offset, y_offset), img)
+        new_image.paste(img, (x_offset, 0))
         x_offset += img.width
+    new_image.save(output_file)
+    return new_image, output_file
 
-    # Save the combined image
-    combined_image.save(output_file)
-
-    # Return the combined image and base64 string
-    return combined_image, image_to_base64(combined_image)
-
-
-def app():
-    recognizer = sr.Recognizer()
-    microphone = sr.Microphone()
-
-    if st.button("Start Listening"):
-        st.write("Listening...")
-        with microphone as source:
-            recognizer.adjust_for_ambient_noise(source)
+class AudioProcessor(AudioProcessorBase):
+    def recv(self, frame):
+        audio_data = frame.to_ndarray()
+        audio_data = np.frombuffer(audio_data, dtype=np.int16)
+        reduced_noise = nr.reduce_noise(y=audio_data, sr=frame.sample_rate)
+        audio_data = sr.AudioData(reduced_noise.tobytes(), frame.sample_rate, 2)
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(audio_data) as source:
+            audio = recognizer.record(source)
             try:
-                # Listen with a timeout of 10 seconds, and auto-stop if no real voice is detected
-                audio = recognizer.listen(source, timeout=10, phrase_time_limit=10)
-
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
-                    f.write(audio.get_wav_data())
-                    temp_audio_file = f.name
-
-                text = audio_to_text(temp_audio_file)
-                st.write(f"Transcribed Text: {text}")
-
+                text = recognizer.recognize_google(audio, language='tl-PH')
+                st.write(f"Recognized Text: {text}")
                 baybayin_images = text_to_baybayin_images(text)
-                combined_image, image_base64 = render_images_to_image(baybayin_images, 'output_image.png',
-                                                                      image_dir='Image')
+                for image_filename in baybayin_images:
+                    image_path = os.path.join('Image', image_filename)
+                    image = Image.open(image_path)
+                    st.image(image, caption=image_filename)
+            except sr.UnknownValueError:
+                st.write("Could not understand audio")
+            except sr.RequestError as e:
+                st.write(f"Could not request results; {e}")
+        return frame
 
-                if combined_image:
-                    st.markdown(
-                        f"""    
-                        <div style="display: flex; justify-content: center; align-items: center;">
-                            <img src="data:image/png;base64,{image_base64}" alt="Baybayin Transcription" />
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-                else:
-                    st.write("No Baybayin images found for the transcribed text.")
-            except sr.WaitTimeoutError:
-                st.write("No real voice detected within 10 seconds. Stopping the listener.")
-
-
-if __name__ == "__main__":
-    app()
+webrtc_streamer(key="example", mode=WebRtcMode.SENDRECV, audio_processor_factory=AudioProcessor)
