@@ -102,7 +102,7 @@ def app():
             </div>
         </body>
         """, unsafe_allow_html=True)
-    st.image('App/App_Images/FC.PNG', use_column_width=True)
+    st.image('FBVRS-capstone-project/App/FC.PNG', use_column_width=True)
     st.markdown("""
         <style>
             .topnav {
