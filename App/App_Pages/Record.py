@@ -90,6 +90,8 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image', padd
     return background
 
 def app():
+    st.image("Image/ga.png")
+
     st.title("Baybayin Transcription from Audio")
 
     uploaded_file = st.file_uploader("Upload an audio file", type=["wav", "mp3", "flac"])
