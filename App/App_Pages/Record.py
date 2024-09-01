@@ -96,11 +96,16 @@ def render_images_to_image(baybayin_images, output_file, image_dir='App/App_Page
         print(f"Output image saved as: {output_file}")  # Debug statement
         return background
     except Exception as e:
-        st.error(f"Error saving the output image: {e}")
+        st.error(f"Error saving output image: {e}")
+        print(f"Exception: Error saving output image: {e}")
         return None
-        
-print("Current working directory:", os.getcwd())
-print("Files in image directory:", os.listdir('/mount/src/fbvrs-capstone-project/App/App_Pages/Image'))
+
+# In your main app code
+combined_image = render_images_to_image(baybayin_images, 'output_image.png')
+if combined_image:
+    st.image(combined_image, caption='Baybayin Transcription')
+else:
+    st.write("No Baybayin images found for the transcribed text.")
 
 def app():
     st.title("Baybayin Transcription from Audio")
