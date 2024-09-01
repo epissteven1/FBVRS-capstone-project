@@ -1,7 +1,7 @@
 librosa
 noisereduce
 numpy
-opencv_python
+opencv-python-headless
 Pillow
 Requests
 soundfile
