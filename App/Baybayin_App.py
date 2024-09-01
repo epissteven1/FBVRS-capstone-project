@@ -12,13 +12,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-@st.cache_data
-def get_img_as_base64(file):
-    with open(file, "rb") as f:
-        data = f.read()
-    return  base64.b64encode(data).decode()
-
-img = get_img_as_base64("App_Images/Sidebar.png")
 
 # Custom CSS for page styling
 st.markdown(f"""
@@ -54,11 +47,7 @@ st.markdown(f"""
             padding: 2px;
             top: 3px;
         }}
-        [data-testid="stSidebarContent"] {{
-        background-image: url("data:image/png;base64,{img}");
-        background-position:center;
-        
-        }}
+    
         [data-testid="stVerticalBlockBorderWrapper"] {{
          background-color: transparent;
         }}
