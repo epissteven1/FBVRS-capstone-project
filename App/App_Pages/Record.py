@@ -5,7 +5,7 @@ import streamlit as st
 
 baybayin_image_mapping = {
     'a': 'A.png', 'e': 'E.png', 'i': 'I.png', 'o': 'O.png', 'u': 'U.png',
-    'ka': 'ka.png', 'ga': 'ga.png', 'nga': 'nga.png', 'ta': 'ta.png', 'da': 'da.png',
+    'ka': 'ka.png', 'ga': 'Ga.png', 'nga': 'nga.png', 'ta': 'ta.png', 'da': 'da.png',
     'na': 'na.png', 'pa': 'pa.png', 'ba': 'ba.png', 'ma': 'ma.png', 'ya': 'ya.png',
     'ra': 'ra.png', 'la': 'la.png', 'wa': 'wa.png', 'sa': 'sa.png', 'ha': 'ha.png'
 }
@@ -90,8 +90,6 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image', padd
     return background
 
 def app():
-    
-
     st.title("Baybayin Transcription from Audio")
 
     uploaded_file = st.file_uploader("Upload an audio file", type=["wav", "mp3", "flac"])
@@ -115,28 +113,22 @@ def app():
         baybayin_images = text_to_baybayin_images(text)
         if baybayin_images:
             combined_image = render_images_to_image(baybayin_images, 'output_image.png', image_dir='Image')
-            st.image(combined_image, caption='Baybayin Transcription')
+            if combined_image:
+                st.image(combined_image, caption='Baybayin Transcription')
         else:
             st.write("No Baybayin images found for the transcribed text.")
 
         if os.path.exists(temp_audio_file):
             os.remove(temp_audio_file)
-            
-
 
 # Go up one directory from the current script location to access the 'App' directory
 app_dir = os.path.dirname(os.path.dirname(__file__))
 
 # Construct the path to the 'Image' directory inside 'App'
-image_path = os.path.join(app_dir, "Image", "Ga.png")
+image_path = os.path.join(app_dir, "App", "Image", "Ga.png")
 
 st.write("Constructed Image Path:", image_path)
 st.image(image_path)
-
-
-
-
-
 
 if __name__ == "__main__":
     app()
