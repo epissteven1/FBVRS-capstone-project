@@ -7,7 +7,7 @@ import os
 baybayin_image_mapping = {
     'a': 'A.png', 'e': 'E.png', 'i': 'I.png', 'o': 'O.png', 'u': 'U.png',
     'ka': 'ka.png', 'ga': 'ga.png', 'nga': 'nga.png', 'ta': 'ta.png', 'da': 'da.png',
-    'na': 'na.png', 'pa': 'pa.png', 'ba': 'ba.png', 'ma': 'ma.png', 'ya': 'ya.png',
+    'na': 'na.png', 'pa': 'pa.png', 'ba': 'Ba.png', 'ma': 'ma.png', 'ya': 'ya.png',
     'ra': 'ra.png', 'la': 'la.png', 'wa': 'wa.png', 'sa': 'sa.png', 'ha': 'ha.png'
 }
 
