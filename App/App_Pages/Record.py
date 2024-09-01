@@ -113,8 +113,6 @@ def render_images_to_image(baybayin_images, output_file, image_dir='App/Image', 
         print(f"Exception: Error saving output image: {e}")
         return None
 
-
-
 def app():
     st.title("Baybayin Transcription from Audio")
 
@@ -134,7 +132,15 @@ def app():
         # Render images to a single image
         combined_image = render_images_to_image(baybayin_images, 'output_image.png')
         if combined_image:
-            st.image(combined_image, caption='Baybayin Transcription')
+            # Save the combined image to a file
+            combined_image_path = 'output_image.png'
+            combined_image.save(combined_image_path)
+
+            # Display the image centered
+            st.markdown(
+                f'<div style="text-align: center;"><img src="data:image/png;base64,{st.image(combined_image_path, use_column_width=True)}" alt="Baybayin Transcription"></div>',
+                unsafe_allow_html=True
+            )
         else:
             st.write("No Baybayin images found for the transcribed text.")
 
