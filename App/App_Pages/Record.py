@@ -123,10 +123,8 @@ def app():
             os.remove(temp_audio_file)
             
 
-st.write("Current Working Directory:", os.getcwd())
-st.write("Files in Current Directory:", os.listdir())
-st.write("Files in 'Image' Directory:", os.listdir('Image'))
-      
+st.image("App/Image/ga.png")
+
 
 if __name__ == "__main__":
     app()
