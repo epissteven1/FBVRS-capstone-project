@@ -123,7 +123,12 @@ def app():
             os.remove(temp_audio_file)
             
 
-st.image('App/Image/ga.png')
+
+
+script_dir = os.path.dirname(__file__)  # Directory of the script
+image_path = os.path.join(script_dir, "Image", "ga.png")
+st.image(image_path)
+
 
 
 if __name__ == "__main__":
