@@ -122,7 +122,11 @@ def app():
         if os.path.exists(temp_audio_file):
             os.remove(temp_audio_file)
             
-st.image("Image/ga.png")          
+
+st.write("Current Working Directory:", os.getcwd())
+st.write("Files in Current Directory:", os.listdir())
+st.write("Files in 'Image' Directory:", os.listdir('Image'))
+      
 
 if __name__ == "__main__":
     app()
