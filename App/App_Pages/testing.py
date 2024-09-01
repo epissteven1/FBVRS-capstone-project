@@ -3,13 +3,18 @@ import streamlit as st
 
 def app():
     st.write("hello")
-    print("Current working directory:", os.getcwd())
+    
+    # Current working directory
+    current_dir = os.getcwd()
+    st.write(f"Current working directory: {current_dir}")
 
-    # Define image_dir or set it to a default value if undefined
-    image_dir = 'Image'  # Adjust this according to your directory structure
-
+    # Define image_dir
+    image_dir = 'Image'
+    
     # Safely get the script directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
     image_directory_path = os.path.join(script_dir, image_dir)
-    print("Image directory path:", image_directory_path)
+    st.write(f"Image directory path: {image_directory_path}")
 
+if __name__ == "__main__":
+    app()
