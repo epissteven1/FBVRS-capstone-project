@@ -2,6 +2,7 @@ import speech_recognition as sr
 from PIL import Image
 import streamlit as st
 import os
+import base64
 
 # Mapping of Baybayin characters to image filenames
 baybayin_image_mapping = {
@@ -136,9 +137,13 @@ def app():
             combined_image_path = 'output_image.png'
             combined_image.save(combined_image_path)
 
-            # Display the image centered
+            # Encode the image to base64
+            with open(combined_image_path, "rb") as image_file:
+                encoded_image = base64.b64encode(image_file.read()).decode()
+
+            # Display the image centered with a specific width
             st.markdown(
-                f'<div style="text-align: center;"><img src="data:image/png;base64,{st.image(combined_image_path, use_column_width=True)}" alt="Baybayin Transcription"></div>',
+                f'<div style="text-align: center;"><img src="data:image/png;base64,{encoded_image}" alt="Baybayin Transcription" style="width: 50%;"></div>',
                 unsafe_allow_html=True
             )
         else:
