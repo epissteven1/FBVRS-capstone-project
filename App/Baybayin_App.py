@@ -8,7 +8,7 @@ from streamlit_option_menu import option_menu
 # Set page configuration and styles
 st.set_page_config(
     page_title="Filipino-to-Baybayin-Voice-Recognition-System",
-    page_icon="App_Images/iconb.jpg",
+    page_icon="App/App_Images/iconb.jpg",
     layout="wide",
     initial_sidebar_state="expanded",
 )
