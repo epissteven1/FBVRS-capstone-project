@@ -3,4 +3,5 @@ tensorflow
 numpy
 Pillow
 Keras
-streamlit-option-menu 
+streamlit-option-menu
+speech_recognition
