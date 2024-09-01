@@ -136,7 +136,8 @@ class AudioProcessor(AudioProcessorBase):
     def recv(self, frame):
         # Convert the audio frame to numpy array and reduce noise
         audio_np = frame.to_ndarray()
-        reduced_noise = reduce_noise(audio_np, frame.sample_rate)
+        st.write("Audio frame received for processing.")  # Debugging line
+        reduced_noise = nr.reduce_noise(y=audio_np, sr=frame.sample_rate)
         
         # Convert the numpy array back to AudioData for recognition
         audio_data = sr.AudioData(reduced_noise.tobytes(), frame.sample_rate, 2)
