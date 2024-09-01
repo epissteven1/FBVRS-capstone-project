@@ -90,7 +90,7 @@ def render_images_to_image(baybayin_images, output_file, image_dir='Image', padd
     return background
 
 def app():
-    st.image("Image/ga.png")
+    
 
     st.title("Baybayin Transcription from Audio")
 
@@ -121,6 +121,8 @@ def app():
 
         if os.path.exists(temp_audio_file):
             os.remove(temp_audio_file)
+            
+  st.image("Image/ga.png")          
 
 if __name__ == "__main__":
     app()
