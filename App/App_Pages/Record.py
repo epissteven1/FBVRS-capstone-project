@@ -143,7 +143,7 @@ def app():
 
             # Display the image centered with a specific width
             st.markdown(
-                f'<div style="text-align: center;"><img src="data:image/png;base64,{encoded_image}" alt="Baybayin Transcription" style="width: 30%;"></div>',
+                f'<div style="text-align: center;"><img src="data:image/png;base64,{encoded_image}" alt="Baybayin Transcription" style="width: 25%;"></div>',
                 unsafe_allow_html=True
             )
         else:
