@@ -13,5 +13,3 @@ def app():
     image_directory_path = os.path.join(script_dir, image_dir)
     print("Image directory path:", image_directory_path)
 
-if __name__ == "__main__":
-    app()
