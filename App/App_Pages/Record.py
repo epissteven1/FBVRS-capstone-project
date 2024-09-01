@@ -100,35 +100,28 @@ def render_images_to_image(baybayin_images, output_file, image_dir='App/App_Page
         print(f"Exception: Error saving output image: {e}")
         return None
 
-# In your main app code
-combined_image = render_images_to_image(baybayin_images, 'output_image.png')
-if combined_image:
-    st.image(combined_image, caption='Baybayin Transcription')
-else:
-    st.write("No Baybayin images found for the transcribed text.")
-
 def app():
     st.title("Baybayin Transcription from Audio")
 
-    uploaded_file = st.file_uploader("Upload an audio file", type=["wav", "mp3", "flac"])
-
+    uploaded_file = st.file_uploader("Upload an audio file", type=["wav", "mp3"])
     if uploaded_file is not None:
-        temp_audio_file = "temp_audio_file.wav"
-        try:
-            with open(temp_audio_file, "wb") as f:
-                f.write(uploaded_file.getbuffer())
-        except Exception as e:
-            st.error(f"Error saving the uploaded audio file: {e}")
-            return
+        # Save the uploaded file temporarily
+        with open("temp_audio_file", "wb") as f:
+            f.write(uploaded_file.getbuffer())
 
-        text = audio_to_text(temp_audio_file)
+        # Convert audio to text
+        text = audio_to_text("temp_audio_file")
         st.write(f"Transcribed Text: {text}")
 
+        # Convert text to Baybayin images
         baybayin_images = text_to_baybayin_images(text)
-        output_image = render_images_to_image(baybayin_images, "output_image.png")
 
-        if output_image:
-            st.image(output_image, caption="Baybayin Transcription")
+        # Render images to a single image
+        combined_image = render_images_to_image(baybayin_images, 'output_image.png')
+        if combined_image:
+            st.image(combined_image, caption='Baybayin Transcription')
+        else:
+            st.write("No Baybayin images found for the transcribed text.")
 
 if __name__ == "__main__":
     app()
