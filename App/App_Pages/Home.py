@@ -20,13 +20,6 @@ def app():
                 body {
                     margin: 0;
                 }
-                .full-page-image img {
-                    width: 100%;
-                    height: 100vh;
-                    object-fit: cover;
-                    
-                }
-            </style>
             <body>
                 <div class="topnav"></div>
             </body>
@@ -42,10 +35,11 @@ def app():
                     margin: 0;
                     background-size:cover;
                 }
-                img {
-                    width: 516px;
-                    height: 1000px;
-                }
+                 img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+            }
                 [data-testid="stHeader"] {
                     background-color: white;
                     padding:0;
