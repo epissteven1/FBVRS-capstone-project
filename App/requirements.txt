@@ -12,3 +12,4 @@ streamlit_option_menu
 tensorflow
 tensorflow_intel
 streamlit-webrtc
+portaudio19-dev
