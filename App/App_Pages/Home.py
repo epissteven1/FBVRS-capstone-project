@@ -52,6 +52,9 @@ def app():
                 margin: 0;
                 background: transparent;
             }
+            img {
+                    width: 516px;
+                    height: 1000px;
             [data-testid="stHeader"] {
                 background-color: white;
                 padding: 0;
