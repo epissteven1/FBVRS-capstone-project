@@ -40,7 +40,7 @@ def app():
         padding-top: 3em;
     }
     [data-testid="stAppViewBlockContainer"] {
-    background-color: #2F4F4F;
+    background-color: #333333;
     }
     </style>
     """, unsafe_allow_html=True)
