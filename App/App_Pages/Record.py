@@ -3,6 +3,8 @@ from PIL import Image
 import streamlit as st
 import os
 import base64
+import cv2
+import numpy as np
 
 # Mapping of Baybayin characters to image filenames
 baybayin_image_mapping = {
@@ -77,7 +79,23 @@ def render_images_to_image(baybayin_images, output_file, image_dir='App/Image', 
         img_path = os.path.join(image_dir, img_name)
         print(f"Attempting to load image: {img_path}")  # Debug statement
         try:
-            img = Image.open(img_path)
+            img = Image.open(img_path).convert("RGBA")
+            # Convert PIL image to OpenCV format
+            img_cv = cv2.cvtColor(np.array(img), cv2.COLOR_RGBA2BGRA)
+            
+            # Remove background (assume white background)
+            gray = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
+            _, alpha = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY_INV)
+            b, g, r, _ = cv2.split(img_cv)
+            img_cv = cv2.merge([b, g, r, alpha])
+
+            # Apply Canny edge detection
+            edges = cv2.Canny(gray, 100, 200)
+            img_cv[:, :, 3] = edges  # Add edges to the alpha channel
+            
+            # Convert back to PIL image
+            img = Image.fromarray(cv2.cvtColor(img_cv, cv2.COLOR_BGRA2RGBA))
+
             images.append(img)
         except FileNotFoundError:
             st.error(f"Image file '{img_name}' not found in directory '{image_dir}'.")
@@ -93,17 +111,17 @@ def render_images_to_image(baybayin_images, output_file, image_dir='App/Image', 
     total_width = sum(img.width for img in images)
     max_height = max(img.height for img in images)
 
-    combined_image = Image.new('RGB', (total_width, max_height), 'white')
+    combined_image = Image.new('RGBA', (total_width, max_height), (255, 255, 255, 0))
     x_offset = 0
     for img in images:
-        combined_image.paste(img, (x_offset, 0))
+        combined_image.paste(img, (x_offset, 0), img)
         x_offset += img.width
 
     background_width = total_width + 2 * padding
     background_height = max_height + 2 * padding
-    background = Image.new('RGB', (background_width, background_height), 'white')
+    background = Image.new('RGBA', (background_width, background_height), (255, 255, 255, 0))
 
-    background.paste(combined_image, (padding, padding))
+    background.paste(combined_image, (padding, padding), combined_image)
 
     try:
         background.save(output_file)
