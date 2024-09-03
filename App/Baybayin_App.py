@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Filipino-to-Baybayin-Voice-Recognition-System",
-    page_icon="App/App_Images/iconb.jpg",
+    page_icon="App/App_Images/logo1.png",
     layout="wide",
     initial_sidebar_state="expanded",
 )
