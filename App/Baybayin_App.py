@@ -1,11 +1,5 @@
-# Import statements
-import base64
-
-from App_Pages import Home, AppDescription, Predict, Record, Feedback
 import streamlit as st
-from streamlit_option_menu import option_menu
 
-# Set page configuration and styles
 st.set_page_config(
     page_title="Filipino-to-Baybayin-Voice-Recognition-System",
     page_icon="App_Images/iconb.jpg",
@@ -13,6 +7,10 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Import statements
+import base64
+from App_Pages import Home, AppDescription, Predict, Record, Feedback, Instruction
+from streamlit_option_menu import option_menu
 
 @st.cache_data
 def get_img_as_base64(file):
