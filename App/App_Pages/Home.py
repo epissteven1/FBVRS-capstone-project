@@ -41,9 +41,17 @@ def app():
                     object-fit: cover;
             }
                 [data-testid="stHeader"] {
-                    background-color: white;
+                    background-color: #333333;
                     padding:0;
                     margin:0;
+                }
+                [data-testid="stHeader"]:before {
+                    content: "Filipino-to-Baybayin-Voice-Recognition-System";
+                    background-color: transparent;
+                    padding-top: 20px;
+                    font-size: 30px; /* Adjust the font size */
+                    font-weight: bold; /* Make the font bold */
+                    margin-top: 50px;
                 }
                 .sidebar {
                     float: right;
