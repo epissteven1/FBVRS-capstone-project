@@ -75,9 +75,10 @@ st.markdown(f"""
         background-color: #696969;
         }}
         [data-testid="stHeader"]:before {{
-        content:"FBVRS";
+        content:"Filipino-to-Baybayin-Voice-Recognition-System";
         background-color: white;
-        
+        padding-top:20px;
+        size: 30px;
         }}
        
     </style>
