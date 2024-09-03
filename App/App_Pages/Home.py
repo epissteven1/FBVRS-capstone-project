@@ -40,7 +40,7 @@ def app():
                     height: 100%;
                     object-fit: cover;
             }
-                [data-testid="stHeader"] {
+               [data-testid="stHeader"] {
                     background-color: #333333;
                     padding:0;
                     margin:0;
