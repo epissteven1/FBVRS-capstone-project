@@ -76,6 +76,7 @@ st.markdown(f"""
         }}
         [data-testid="stHeader"]:before {{
         content:"Filipino-to-Baybayin-Voice-Recognition-System";
+        background-color:transparent;
         background-color: white;
         padding-top:20px;
         size: 30px;
