@@ -73,14 +73,13 @@ st.markdown(f"""
         [data-testid="stHeader"] {{
         background-color: #696969;
         }}
-      [data-testid="stHeader"]:before {{
+     [data-testid="stHeader"]:before {{
         content:"Filipino-to-Baybayin-Voice-Recognition-System";
         background-color:transparent;
         padding-top: 20px;
         font-size: 30px; /* Adjust the font size */
         font-weight: bold; /* Make the font bold */
         margin-top: 50px;
-        
         }}
        
     </style>
