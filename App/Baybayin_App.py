@@ -73,6 +73,7 @@ st.markdown(f"""
         }}
         [data-testid="stHeader"] {{
         background-color: #696969;
+        content: "FBVRS"
         }}
        
     </style>
