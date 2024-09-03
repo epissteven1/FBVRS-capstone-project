@@ -72,7 +72,7 @@ st.markdown(f"""
         background-color: white;
         }}
         [data-testid="stHeader"] {{
-        background-color: white;
+        background-color: #8B4513;
         }}
        
     </style>
