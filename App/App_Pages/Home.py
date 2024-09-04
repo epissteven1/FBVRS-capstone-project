@@ -25,8 +25,6 @@ def app():
             </body>
         """, unsafe_allow_html=True)
 
-    # Directly load and display the image using Streamlit's st.image
-    st.image(image="App/App_Images/dash_logo.png", use_column_width=True)
 
     st.markdown("""
             <style>
