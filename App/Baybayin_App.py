@@ -9,7 +9,7 @@ st.set_page_config(
 
 # Import statements
 import base64
-from App_Pages import Home, AppDescription,  Record, Feedback, Instruction
+from App_Pages import Home, AppDescription, Record, Feedback, Instruction
 from streamlit_option_menu import option_menu
 
 @st.cache_data
