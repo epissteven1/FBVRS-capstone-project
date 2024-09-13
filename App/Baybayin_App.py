@@ -80,7 +80,7 @@ st.markdown(f"""
 
 # Function to render the app
 def app():
-    menu_list = ["Home", "Predict", "Description", "Translate", "Feedback"]
+    menu_list = ["Home", "Predict", "Description", "Feedback"]
     with st.sidebar:
         option = option_menu("MENU",
                              menu_list,
