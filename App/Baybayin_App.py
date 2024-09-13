@@ -9,7 +9,7 @@ st.set_page_config(
 
 # Import statements
 import base64
-from App_Pages import Home, AppDescription, Predict, Record, Feedback, Instruction
+from App_Pages import Home, AppDescription,  Record, Feedback, Instruction
 from streamlit_option_menu import option_menu
 
 @st.cache_data
@@ -84,7 +84,7 @@ def app():
     with st.sidebar:
         option = option_menu("MENU",
                              menu_list,
-                             icons=['house', 'record', 'sliders', 'search', 'chat'],
+                             icons=['house', 'record', 'sliders', 'chat'],
                              menu_icon="app-indicator",
                              default_index=1,
                              styles={
@@ -104,8 +104,6 @@ def app():
     elif option == menu_list[2]:
         AppDescription.app()
     elif option == menu_list[3]:
-        Predict.app()
-    elif option == menu_list[4]:
         Feedback.app()
 
 
