@@ -118,6 +118,9 @@ def app():
         .css-1d391kg {width: 70%!important;}  /* Full width on mobile */
         .css-1d391kg {min-width: 70%!important;}  
         .css-1l02zno {font-size: 14px;}  /* Smaller font for mobile view */
+         [data-testid="stSidebarContent"]{
+            width: 50%!important;
+        }
     }
     </style>
     """, unsafe_allow_html=True)
