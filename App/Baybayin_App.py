@@ -80,31 +80,47 @@ st.markdown(f"""
 
 # Function to render the app
 def app():
-    menu_list = ["Home", "Predict", "Description", "Feedback"]
+    menu_list = ["Home", "Predict", "Description", "Translate", "Feedback", "Test"]
     with st.sidebar:
         option = option_menu("MENU",
                              menu_list,
-                             icons=['house', 'record', 'sliders', 'chat'],
+                             icons=['house', 'record', 'sliders', 'search', 'chat', 'test'],
                              menu_icon="app-indicator",
                              default_index=1,
                              styles={
                                  "container": {"padding": "5!important"},
-                                 "icon": {"color": "#b77b82", "font-size": "28px"},
-                                 "nav-link": {"font-size": "16px", "text-align": "left", "margin": "0px",
+                                 "icon": {"color": "#b77b82", "font-size": "20px"},  # Adjusted for smaller view
+                                 "nav-link": {"font-size": "12px", "text-align": "left", "margin": "0px",
                                               "--hover-color": "#F6E1D3"},
-                                 "nav-link-selected": {"background-color": "#00008B"}
-
+                                 "nav-link-selected": {"background-color": "#00008B"},
+                                 "nav-link-hover": {"background-color": "#f0f0f5"}  # Hover effect
                              })
 
     # Render selected page
     if option == menu_list[0]:
         Home.app()
-    elif option == menu_list[1]:
+    if option == menu_list[1]:
         Record.app()
-    elif option == menu_list[2]:
+    if option == menu_list[2]:
         AppDescription.app()
-    elif option == menu_list[3]:
+    if option == menu_list[3]:
+        Predict.app()
+    if option == menu_list[4]:
         Feedback.app()
+    if option == menu_list[5]:
+        Instruction.app()
+
+    # Custom CSS for mobile responsiveness
+    st.markdown("""
+    <style>
+    /* Sidebar container for mobile */
+    @media only screen and (max-width: 600px) {
+        .css-1d391kg {width: 100%!important;}  /* Full width on mobile */
+        .css-1d391kg {min-width: 100%!important;}  
+        .css-1l02zno {font-size: 14px;}  /* Smaller font for mobile view */
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 
 if __name__ == '__main__':
