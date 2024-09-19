@@ -135,12 +135,7 @@ def app():
     .block-container {
         padding-left: 0rem !important; /* Remove extra padding */
     }
-    [data-testid="stSidebarContent"]{
-            width: 50%!important;
-        }
-    [data-testid="stSidebar"]{
-            width: 50px!important;
-        }
+    
 
     </style>
     """, unsafe_allow_html=True)
