@@ -37,7 +37,7 @@ def app():
                 }
                  img {
                     width: 1300px!important;
-                    height: 800px;
+                    height: 900px;
                     object-fit: fill;
             }
                [data-testid="stHeader"] {
