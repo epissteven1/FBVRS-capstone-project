@@ -139,7 +139,7 @@ def app():
             width: 50%!important;
         }
     [data-testid="stSidebar"]{
-            width: 50px;
+            width: 50px!important;
         }
 
     </style>
