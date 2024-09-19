@@ -40,6 +40,13 @@ def app():
                     height: 900px;
                     object-fit: fill;
             }
+                 @media only screen and (max-width: 600px){
+                img {
+                    width:500px!important;
+                    height:800px!important;
+                    object-fit: fill;
+                }
+                 }
                [data-testid="stHeader"] {
                     background-color: #333333;
                     padding:0;
