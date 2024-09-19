@@ -125,7 +125,7 @@ def app():
     
     /* Mobile view adjustments */
     @media only screen and (max-width: 600px) {
-        .sidebar {width: 60px !important;}  /* Sidebar defaults to icons only on small screens */
+        .sidebar {width: 30px !important;}  /* Sidebar defaults to icons only on small screens */
     }
     </style>
     """, unsafe_allow_html=True)
