@@ -103,8 +103,6 @@ def app():
     if option == menu_list[2]:
         AppDescription.app()
     if option == menu_list[3]:
-        Predict.app()
-    if option == menu_list[4]:
         Feedback.app()
 
 
