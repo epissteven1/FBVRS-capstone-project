@@ -112,31 +112,26 @@ def app():
 
     # Custom CSS for mobile responsiveness
    # Custom CSS for fixing the black space issue on smartphones
-    st.markdown("""
+     st.markdown("""
     <style>
-    /* Set the sidebar to take full screen width when expanded on mobile */
-    .sidebar {
-        width: 60px !important; /* Default width with only icons */
-        transition: width 0.3s; /* Smooth transition for expansion */
-    }
-
-    /* Expand the sidebar fully when hovered on mobile screens */
-    @media only screen and (max-width: 600px) {
-        .sidebar:hover {
-            width: 40vw !important; /* Full width expansion */
-        }
-        /* Ensure the content inside expands properly when hovered */
-        .sidebar:hover .sidebar-content {
-            display: block;
-        }
-    }
-
-    /* Handle black space by adjusting the padding */
-    .block-container {
-        padding-left: 0rem !important; /* Remove extra padding */
-    }
+    /* Initially hide the sidebar content (text), but keep the icons visible */
+    .sidebar .sidebar-content {display: none;}
+    .sidebar-collapsed .sidebar-content {display: none;} /* Content hidden when collapsed */
     
-
+    /* Show only icons on the left */
+    .sidebar {width: 60px !important; min-width: 60px !important;} /* Adjust sidebar width */
+    
+    /* Sidebar icon size and alignment */
+    .icon {margin-left: auto; margin-right: auto;}
+    
+    /* When sidebar is expanded (on hover or toggle), show text */
+    .sidebar:hover .sidebar-content {display: block;} 
+    .sidebar:hover {width: 200px !important;} /* Expand sidebar when hovered */
+    
+    /* Mobile view adjustments */
+    @media only screen and (max-width: 600px) {
+        .sidebar {width: 60px !important;}  /* Sidebar defaults to icons only on small screens */
+    }
     </style>
     """, unsafe_allow_html=True)
 
