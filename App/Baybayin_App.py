@@ -89,11 +89,10 @@ def app():
                              default_index=1,
                              styles={
                                  "container": {"padding": "5!important"},
-                                 "icon": {"color": "#b77b82", "font-size": "20px"},  # Adjusted for smaller view
+                                 "icon": {"color": "#b77b82", "font-size": "20px"},
                                  "nav-link": {"font-size": "12px", "text-align": "left", "margin": "0px",
                                               "--hover-color": "#F6E1D3"},
                                  "nav-link-selected": {"background-color": "#00008B"},
-                                 "nav-link-hover": {"background-color": "#f0f0f5"}  # Hover effect
                              })
 
     # Render selected page
@@ -110,9 +109,8 @@ def app():
     if option == menu_list[5]:
         Instruction.app()
 
-    # Custom CSS for mobile responsiveness
-   # Custom CSS for fixing the black space issue on smartphones
-     st.markdown("""
+    # Custom CSS for collapsible sidebar with icons on the left
+    st.markdown("""
     <style>
     /* Initially hide the sidebar content (text), but keep the icons visible */
     .sidebar .sidebar-content {display: none;}
