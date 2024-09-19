@@ -84,7 +84,7 @@ def app():
     with st.sidebar:
         option = option_menu("MENU",
                              menu_list,
-                             icons=['house', 'record', 'sliders', 'search', 'chat'],
+                             icons=['house', 'record', 'sliders', 'search', 'chat']
                              menu_icon="app-indicator",
                              default_index=1,
                              styles={
