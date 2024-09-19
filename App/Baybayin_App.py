@@ -121,6 +121,9 @@ def app():
          [data-testid="stSidebarContent"]{
             width: 50%!important;
         }
+        .block-container {
+        padding: 0rem 1rem;  /* Adjust padding to avoid extra space */
+    }
        
     }
     </style>
