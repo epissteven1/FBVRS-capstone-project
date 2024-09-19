@@ -9,7 +9,7 @@ st.set_page_config(
 
 # Import statements
 import base64
-from App_Pages import Home, AppDescription, Record, Feedback, Instruction
+from App_Pages import Home, AppDescription, Record, Feedback
 from streamlit_option_menu import option_menu
 
 @st.cache_data
@@ -106,8 +106,7 @@ def app():
         Predict.app()
     if option == menu_list[4]:
         Feedback.app()
-    if option == menu_list[5]:
-        Instruction.app()
+
 
     # Custom CSS for collapsible sidebar with icons on the left
     st.markdown("""
