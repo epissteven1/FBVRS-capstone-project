@@ -37,8 +37,8 @@ def app():
                 }
                  img {
                     width: 100%;
-                    height: 100%;
-                    object-fit: cover;
+                    height: 1000px;
+                    object-fit: fill;
             }
                [data-testid="stHeader"] {
                     background-color: #333333;
