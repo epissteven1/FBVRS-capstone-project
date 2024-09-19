@@ -111,20 +111,29 @@ def app():
         Instruction.app()
 
     # Custom CSS for mobile responsiveness
+   # Custom CSS for fixing the black space issue on smartphones
     st.markdown("""
     <style>
-    /* Sidebar container for mobile */
-    @media only screen and (max-width: 600px) {
-        .css-1d391kg {width: 70%!important;}  /* Full width on mobile */
-        .css-1d391kg {min-width: 70%!important;}  
-        .css-1l02zno {font-size: 14px;}  /* Smaller font for mobile view */
-         [data-testid="stSidebarContent"]{
-            width: 50%!important;
-        }
-        .block-container {
-        padding: 0rem 1rem;  /* Adjust padding to avoid extra space */
+    /* Set the sidebar to take full screen width when expanded on mobile */
+    .sidebar {
+        width: 60px !important; /* Default width with only icons */
+        transition: width 0.3s; /* Smooth transition for expansion */
     }
-       
+
+    /* Expand the sidebar fully when hovered on mobile screens */
+    @media only screen and (max-width: 600px) {
+        .sidebar:hover {
+            width: 100vw !important; /* Full width expansion */
+        }
+        /* Ensure the content inside expands properly when hovered */
+        .sidebar:hover .sidebar-content {
+            display: block;
+        }
+    }
+
+    /* Handle black space by adjusting the padding */
+    .block-container {
+        padding-left: 0rem !important; /* Remove extra padding */
     }
     </style>
     """, unsafe_allow_html=True)
