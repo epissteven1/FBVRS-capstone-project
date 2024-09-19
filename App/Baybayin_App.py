@@ -123,7 +123,7 @@ def app():
     /* Expand the sidebar fully when hovered on mobile screens */
     @media only screen and (max-width: 600px) {
         .sidebar:hover {
-            width: 100vw !important; /* Full width expansion */
+            width: 60vw !important; /* Full width expansion */
         }
         /* Ensure the content inside expands properly when hovered */
         .sidebar:hover .sidebar-content {
