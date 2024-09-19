@@ -115,8 +115,8 @@ def app():
     <style>
     /* Sidebar container for mobile */
     @media only screen and (max-width: 600px) {
-        .css-1d391kg {width: 100%!important;}  /* Full width on mobile */
-        .css-1d391kg {min-width: 100%!important;}  
+        .css-1d391kg {width: 70%!important;}  /* Full width on mobile */
+        .css-1d391kg {min-width: 70%!important;}  
         .css-1l02zno {font-size: 14px;}  /* Smaller font for mobile view */
     }
     </style>
