@@ -138,6 +138,10 @@ def app():
     [data-testid="stSidebarContent"]{
             width: 50%!important;
         }
+    [data-testid="stSidebar"]{
+            width: 50px;
+        }
+
     </style>
     """, unsafe_allow_html=True)
 
