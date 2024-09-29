@@ -80,13 +80,13 @@ st.markdown(f"""
 
 # Function to render the app
 def app():
-    menu_list = ["Predict", "Home", "Description", "Feedback"]
+    menu_list = ["Home", "Predict", "Description", "Feedback"]
     with st.sidebar:
         option = option_menu("MENU",
                              menu_list,
                              icons=['house', 'record', 'sliders', 'chat'],
                              menu_icon="app-indicator",
-                             default_index=1,
+                             default_index=0,
                              styles={
                                  "container": {"padding": "5!important"},
                                  "icon": {"color": "#b77b82", "font-size": "20px"},
