@@ -42,9 +42,9 @@ def app():
             }
                  @media only screen and (max-width: 600px){
                 img {
-                    width:600px!important;
-                    height:800px!important;
-                    object-fit: fill;
+                    width:auto;
+                    height:auto;
+                    object-fit: cover;
                 }
                  }
                [data-testid="stHeader"] {
