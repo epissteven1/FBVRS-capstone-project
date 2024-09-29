@@ -131,6 +131,11 @@ def app():
 
     elif option == 'Record Audio':
         st.write("Record your audio below:")
+        
+        # Use session state to store audio data
+        if 'recorded_audio' not in st.session_state:
+            st.session_state.recorded_audio = None
+
         webrtc_ctx = webrtc_streamer(
             key="audio-recorder",
             mode=WebRtcMode.SENDONLY,
@@ -140,36 +145,39 @@ def app():
             }
         )
 
+        # Once recording is done, store the audio data in session state
         if webrtc_ctx.audio_receiver:
-            audio_data = webrtc_ctx.audio_receiver.get_frames()
-            # You can save this audio and process it using your audio processing functions
+            audio_frames = webrtc_ctx.audio_receiver.get_frames()
+            if audio_frames:
+                # Process audio frames and store them in session state
+                st.session_state.recorded_audio = b"".join([frame.to_ndarray().tobytes() for frame in audio_frames])
+                st.success("Recording saved!")
+
+        if st.session_state.recorded_audio:
+            st.audio(st.session_state.recorded_audio)
+            with open("temp_audio_file.wav", "wb") as f:
+                f.write(st.session_state.recorded_audio)
+            process_audio("temp_audio_file.wav")
 
 def process_audio(audio_file):
     # Convert audio to text
     text = audio_to_text(audio_file)
     st.write(f"Transcribed Text: {text}")
 
-    # Convert text to Baybayin images
-    baybayin_images = text_to_baybayin_images(text)
+    # You can add the Baybayin image rendering part here
+    # ...
 
-    # Render images to a single image
-    combined_image = render_images_to_image(baybayin_images, 'output_image.png')
-    if combined_image:
-        # Save the combined image to a file
-        combined_image_path = 'output_image.png'
-        combined_image.save(combined_image_path)
-
-        # Encode the image to base64
-        with open(combined_image_path, "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode()
-
-        # Display the image centered with a specific width
-        st.markdown(
-            f'<div style="text-align: center;"><img src="data:image/png;base64,{encoded_image}" alt="Baybayin Transcription" style="width: 25%; height: 200px;"></div>',
-            unsafe_allow_html=True
-        )
-    else:
-        st.write("No Baybayin images found for the transcribed text.")
+def audio_to_text(audio_file):
+    recognizer = sr.Recognizer()
+    try:
+        with sr.AudioFile(audio_file) as source:
+            audio_data = recognizer.record(source)
+        text = recognizer.recognize_google(audio_data, language='tl-PH')
+        return text
+    except sr.UnknownValueError:
+        return "Could not understand the audio"
+    except sr.RequestError as e:
+        return f"Error with speech recognition service: {e}"
 
 if __name__ == "__main__":
     app()
