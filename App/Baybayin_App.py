@@ -78,6 +78,58 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
+# JavaScript for toggling the sidebar collapse/expand
+st.markdown("""
+    <style>
+        /* Button styling for collapsing/expanding the sidebar */
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            left: 15px;
+            z-index: 1000;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        .toggle-btn:hover {
+            background-color: #555;
+        }
+
+        /* Adjusting sidebar visibility */
+        .collapsed .sidebar .css-fg4pbf {
+            width: 80px;
+        }
+
+        .expanded .sidebar .css-fg4pbf {
+            width: 300px;
+        }
+    </style>
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.querySelector("section[data-testid='stSidebar']");
+            var mainblock = document.querySelector("section[data-testid='stAppViewContainer']");
+            if (sidebar.style.display === "none") {
+                sidebar.style.display = "block";
+                mainblock.style.marginLeft = "300px";
+                document.getElementById("toggle-btn").innerHTML = "&#9776;";  // Set to burger menu icon
+            } else {
+                sidebar.style.display = "none";
+                mainblock.style.marginLeft = "0px";
+                document.getElementById("toggle-btn").innerHTML = "&#x2715;";  // Set to cross icon
+            }
+        }
+    </script>
+""", unsafe_allow_html=True)
+
+# Add the toggle button for collapsing/expanding sidebar
+st.markdown("""
+    <button class="toggle-btn" id="toggle-btn" onclick="toggleSidebar()">&#9776;</button>
+""", unsafe_allow_html=True)
+
 # Function to render the app
 def app():
     menu_list = ["Home", "Predict", "Description", "Feedback"]
@@ -86,7 +138,7 @@ def app():
                              menu_list,
                              icons=['house', 'record', 'sliders', 'chat'],
                              menu_icon="app-indicator",
-                             default_index=0,
+                             default_index=0,  # Set "Home" as the default
                              styles={
                                  "container": {"padding": "5!important"},
                                  "icon": {"color": "#b77b82", "font-size": "20px"},
@@ -104,31 +156,6 @@ def app():
         AppDescription.app()
     if option == menu_list[3]:
         Feedback.app()
-
-
-    # Custom CSS for collapsible sidebar with icons on the left
-    st.markdown("""
-    <style>
-    /* Initially hide the sidebar content (text), but keep the icons visible */
-    .sidebar .sidebar-content {display: none;}
-    .sidebar-collapsed .sidebar-content {display: none;} /* Content hidden when collapsed */
-    
-    /* Show only icons on the left */
-    .sidebar {width: 60px !important; min-width: 60px !important;} /* Adjust sidebar width */
-    
-    /* Sidebar icon size and alignment */
-    .icon {margin-left: auto; margin-right: auto;}
-    
-    /* When sidebar is expanded (on hover or toggle), show text */
-    .sidebar:hover .sidebar-content {display: block;} 
-    .sidebar:hover {width: 200px !important;} /* Expand sidebar when hovered */
-    
-    /* Mobile view adjustments */
-    @media only screen and (max-width: 600px) {
-        .sidebar {width: 30px !important;}  /* Sidebar defaults to icons only on small screens */
-    }
-    </style>
-    """, unsafe_allow_html=True)
 
 
 if __name__ == '__main__':
