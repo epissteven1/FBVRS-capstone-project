@@ -42,7 +42,7 @@ def app():
             }
                  @media only screen and (max-width: 600px){
                 img {
-                    width:500px!important;
+                    width:450px!important;
                     height:600px!important;
                     object-fit: fill;
                 }
