@@ -3,6 +3,7 @@ from PIL import Image
 import streamlit as st
 import os
 import base64
+from streamlit_webrtc import webrtc_streamer, WebRtcMode
 
 # Mapping of Baybayin characters to image filenames
 baybayin_image_mapping = {
@@ -117,37 +118,58 @@ def render_images_to_image(baybayin_images, output_file, image_dir='App/Image', 
 def app():
     st.title("Baybayin Transcription from Audio")
 
-    uploaded_file = st.file_uploader("Browse or Record Audio", type=["wav", "mp3"])
-    if uploaded_file is not None:
-        # Save the uploaded file temporarily
-        with open("temp_audio_file", "wb") as f:
-            f.write(uploaded_file.getbuffer())
+    # Offer users the option to record or upload audio
+    option = st.radio("Choose input method:", ('Upload Audio', 'Record Audio'))
 
-        # Convert audio to text
-        text = audio_to_text("temp_audio_file")
-        st.write(f"Transcribed Text: {text}")
+    if option == 'Upload Audio':
+        uploaded_file = st.file_uploader("Browse or Record Audio", type=["wav", "mp3"])
+        if uploaded_file is not None:
+            # Save the uploaded file temporarily
+            with open("temp_audio_file", "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            process_audio("temp_audio_file")
 
-        # Convert text to Baybayin images
-        baybayin_images = text_to_baybayin_images(text)
+    elif option == 'Record Audio':
+        st.write("Record your audio below:")
+        webrtc_ctx = webrtc_streamer(
+            key="audio-recorder",
+            mode=WebRtcMode.SENDONLY,
+            media_stream_constraints={
+                "audio": True,
+                "video": False
+            }
+        )
 
-        # Render images to a single image
-        combined_image = render_images_to_image(baybayin_images, 'output_image.png')
-        if combined_image:
-            # Save the combined image to a file
-            combined_image_path = 'output_image.png'
-            combined_image.save(combined_image_path)
+        if webrtc_ctx.audio_receiver:
+            audio_data = webrtc_ctx.audio_receiver.get_frames()
+            # You can save this audio and process it using your audio processing functions
 
-            # Encode the image to base64
-            with open(combined_image_path, "rb") as image_file:
-                encoded_image = base64.b64encode(image_file.read()).decode()
+def process_audio(audio_file):
+    # Convert audio to text
+    text = audio_to_text(audio_file)
+    st.write(f"Transcribed Text: {text}")
 
-            # Display the image centered with a specific width
-            st.markdown(
-                f'<div style="text-align: center;"><img src="data:image/png;base64,{encoded_image}" alt="Baybayin Transcription" style="width: 25%; height: 200px;"></div>',
-                unsafe_allow_html=True
-            )
-        else:
-            st.write("No Baybayin images found for the transcribed text.")
+    # Convert text to Baybayin images
+    baybayin_images = text_to_baybayin_images(text)
+
+    # Render images to a single image
+    combined_image = render_images_to_image(baybayin_images, 'output_image.png')
+    if combined_image:
+        # Save the combined image to a file
+        combined_image_path = 'output_image.png'
+        combined_image.save(combined_image_path)
+
+        # Encode the image to base64
+        with open(combined_image_path, "rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode()
+
+        # Display the image centered with a specific width
+        st.markdown(
+            f'<div style="text-align: center;"><img src="data:image/png;base64,{encoded_image}" alt="Baybayin Transcription" style="width: 25%; height: 200px;"></div>',
+            unsafe_allow_html=True
+        )
+    else:
+        st.write("No Baybayin images found for the transcribed text.")
 
 if __name__ == "__main__":
     app()
