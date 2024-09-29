@@ -1,15 +1,10 @@
-import os
 import speech_recognition as sr
-from PIL import Image, ImageOps
+from PIL import Image
 import streamlit as st
-import tempfile
+import os
 import base64
-from io import BytesIO
-import cv2
-import numpy as np
-import noisereduce as nr  # Noise reduction library
 
-# Mapping from syllable to image filename
+# Mapping of Baybayin characters to image filenames
 baybayin_image_mapping = {
     'a': 'A.png', 'e': 'E.png', 'i': 'I.png', 'o': 'O.png', 'u': 'U.png',
     'ka': 'Ka.png', 'ga': 'Ga.png', 'nga': 'Nga.png', 'ta': 'Ta.png', 'da': 'Da.png',
@@ -29,30 +24,22 @@ baybayin_image_mapping = {
     'ye': 'Ye.png', 'yi': 'Yi.png', 'yo': 'Yo.png', 'yu': 'Yu.png'
 }
 
-
-def reduce_noise(audio_data):
-    # Convert audio to numpy array
-    audio_np = np.frombuffer(audio_data.get_raw_data(), dtype=np.int16)
-    # Reduce noise using the noisereduce library
-    reduced_noise = nr.reduce_noise(y=audio_np, sr=audio_data.sample_rate)
-    return sr.AudioData(reduced_noise.tobytes(), audio_data.sample_rate, audio_data.sample_width)
-
-
 def audio_to_text(audio_file):
+    if not os.path.exists(audio_file):
+        return "Audio file not found."
+    
     recognizer = sr.Recognizer()
-    with sr.AudioFile(audio_file) as source:
-        # Adjust for ambient noise and capture audio
-        audio_data = recognizer.record(source)
-        # Apply noise reduction
-        audio_data = reduce_noise(audio_data)
     try:
-        text = recognizer.recognize_google(audio_data, language='tl-PH')  # Tagalog
+        with sr.AudioFile(audio_file) as source:
+            audio_data = recognizer.record(source)
+        text = recognizer.recognize_google(audio_data, language='tl-PH')
         return text
     except sr.UnknownValueError:
         return "Could not understand audio"
     except sr.RequestError as e:
         return f"Could not request results; {e}"
-
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 def split_into_syllables(word):
     vowels = 'aeiou'
@@ -71,7 +58,6 @@ def split_into_syllables(word):
         syllables.append(current_syllable)
     return syllables
 
-
 def text_to_baybayin_images(text):
     words = text.split()
     baybayin_images = []
@@ -83,96 +69,85 @@ def text_to_baybayin_images(text):
                 baybayin_images.append(image_filename)
     return baybayin_images
 
-
-def image_to_base64(image):
-    buffered = BytesIO()
-    image.save(buffered, format="PNG")
-    return base64.b64encode(buffered.getvalue()).decode()
-
-
-def apply_canny_edge_detection(image):
-    # Convert image to grayscale
-    gray = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
-    # Apply Canny edge detection
-    edges = cv2.Canny(gray, 100, 200)
-    # Create a mask with edges
-    mask = Image.fromarray(edges)
-    return mask
-
-
-def render_images_to_image(baybayin_images, output_file, image_dir='Image'):
-    if not baybayin_images:
-        return None, None
-
-    # Load the images
-    images = [Image.open(os.path.join(image_dir, img)).convert("RGBA") for img in baybayin_images]
+def render_images_to_image(baybayin_images, output_file, image_dir='App/Image', padding=20):
+    images = []
+    # Ensure the image_dir is an absolute path
+    image_dir = os.path.abspath(image_dir)
+    for img_name in baybayin_images:
+        img_path = os.path.join(image_dir, img_name)
+        print(f"Attempting to load image: {img_path}")  # Debug statement
+        try:
+            img = Image.open(img_path)
+            images.append(img)
+        except FileNotFoundError:
+            st.error(f"Image file '{img_name}' not found in directory '{image_dir}'.")
+            print(f"FileNotFoundError: Image file '{img_name}' not found in directory '{image_dir}'.")
+        except Exception as e:
+            st.error(f"Error loading image '{img_name}': {e}")
+            print(f"Exception: Error loading image '{img_name}': {e}")
 
     if not images:
-        return None, None
+        st.error("No valid images were loaded to create the output image.")
+        return None
 
-    # Apply edge detection and transparency
-    for i in range(len(images)):
-        edge_mask = apply_canny_edge_detection(images[i])
-        images[i].putalpha(edge_mask)
-
-    # Calculate the total width and height for the final image
     total_width = sum(img.width for img in images)
     max_height = max(img.height for img in images)
 
-    # Create a new blank image with the calculated dimensions
-    combined_image = Image.new('RGBA', (total_width, max_height), (255, 255, 255, 0))
-
-    # Paste each image onto the blank image, centering them vertically
+    combined_image = Image.new('RGB', (total_width, max_height), 'white')
     x_offset = 0
     for img in images:
-        y_offset = (max_height - img.height) // 2  # Center the image vertically
-        combined_image.paste(img, (x_offset, y_offset), img)
+        combined_image.paste(img, (x_offset, 0))
         x_offset += img.width
 
-    # Save the combined image
-    combined_image.save(output_file)
+    background_width = total_width + 2 * padding
+    background_height = max_height + 2 * padding
+    background = Image.new('RGB', (background_width, background_height), 'white')
 
-    # Return the combined image and base64 string
-    return combined_image, image_to_base64(combined_image)
+    background.paste(combined_image, (padding, padding))
 
+    try:
+        background.save(output_file)
+        print(f"Output image saved as: {output_file}")  # Debug statement
+        return background
+    except Exception as e:
+        st.error(f"Error saving output image: {e}")
+        print(f"Exception: Error saving output image: {e}")
+        return None
 
 def app():
-    recognizer = sr.Recognizer()
-    microphone = sr.Microphone()
+    st.title("Baybayin Transcription from Audio")
 
-    if st.button("Start Listening"):
-        st.write("Listening...")
-        with microphone as source:
-            recognizer.adjust_for_ambient_noise(source)
-            try:
-                # Listen with a timeout of 10 seconds, and auto-stop if no real voice is detected
-                audio = recognizer.listen(source, timeout=10, phrase_time_limit=10)
+    uploaded_file = st.file_uploader("Browse or Record Audio", type=["wav", "mp3"])
+    if uploaded_file is not None:
+        # Save the uploaded file temporarily
+        with open("temp_audio_file", "wb") as f:
+            f.write(uploaded_file.getbuffer())
 
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
-                    f.write(audio.get_wav_data())
-                    temp_audio_file = f.name
+        # Convert audio to text
+        text = audio_to_text("temp_audio_file")
+        st.write(f"Transcribed Text: {text}")
 
-                text = audio_to_text(temp_audio_file)
-                st.write(f"Transcribed Text: {text}")
+        # Convert text to Baybayin images
+        baybayin_images = text_to_baybayin_images(text)
 
-                baybayin_images = text_to_baybayin_images(text)
-                combined_image, image_base64 = render_images_to_image(baybayin_images, 'output_image.png',
-                                                                      image_dir='Image')
+        # Render images to a single image
+        combined_image = render_images_to_image(baybayin_images, 'output_image.png')
+        if combined_image:
+            # Save the combined image to a file
+            combined_image_path = 'output_image.png'
+            combined_image.save(combined_image_path)
 
-                if combined_image:
-                    st.markdown(
-                        f"""    
-                        <div style="display: flex; justify-content: center; align-items: center;">
-                            <img src="data:image/png;base64,{image_base64}" alt="Baybayin Transcription" />
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
-                else:
-                    st.write("No Baybayin images found for the transcribed text.")
-            except sr.WaitTimeoutError:
-                st.write("No real voice detected within 10 seconds. Stopping the listener.")
+            # Encode the image to base64
+            with open(combined_image_path, "rb") as image_file:
+                encoded_image = base64.b64encode(image_file.read()).decode()
 
+            # Display the image centered with a specific width
+            st.markdown(
+                f'<div style="text-align: center;"><img src="data:image/png;base64,{encoded_image}" alt="Baybayin Transcription" style="width: 25%; height: 200px;"></div>',
+                unsafe_allow_html=True
+            )
+        else:
+            st.write("No Baybayin images found for the transcribed text.")
 
 if __name__ == "__main__":
-    app()	
+    app()
