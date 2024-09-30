@@ -107,7 +107,7 @@ def remove_background(image):
 def render_images_to_image(baybayin_images, output_file, image_dir='App/Image'):
     if not baybayin_images:
         return None, None
-    images = [remove_background(Image.open(os.path.join(image_dir, img))) for img in baybayin_images]
+    images = [remove_background(App/Image.open(os.path.join(image_dir, img))) for img in baybayin_images]
 
     # Resize images if more than 2
     if len(images) > 2:
