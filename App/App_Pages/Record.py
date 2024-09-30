@@ -171,7 +171,7 @@ def app():
         st.write(f"Transcribed Text: {text}")
 
         baybayin_images = text_to_baybayin_images(text)
-        combined_image, image_base64 = render_images_to_image(baybayin_images, 'output_image.png', image_dir='Image')
+        combined_image, image_base64 = render_images_to_image(baybayin_images, 'output_image.png', image_dir='App/Image')
 
         if combined_image:
             image_base64 = image_to_base64(combined_image)
