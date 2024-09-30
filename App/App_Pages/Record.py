@@ -104,10 +104,10 @@ def remove_background(image):
     return Image.fromarray(data)
 
 
-def render_images_to_image(baybayin_images, output_file, image_dir='App/Image'):
+def render_images_to_image(baybayin_images, output_file, image_dir='Image'):
     if not baybayin_images:
         return None, None
-    images = [remove_background(App/Image.open(os.path.join(image_dir, img))) for img in baybayin_images]
+    images = [remove_background(Image.open(os.path.join(image_dir, img))) for img in baybayin_images]
 
     # Resize images if more than 2
     if len(images) > 2:
@@ -171,7 +171,7 @@ def app():
         st.write(f"Transcribed Text: {text}")
 
         baybayin_images = text_to_baybayin_images(text)
-        combined_image, image_base64 = render_images_to_image(baybayin_images, 'output_image.png', image_dir='App/Image')
+        combined_image, image_base64 = render_images_to_image(baybayin_images, 'output_image.png', image_dir='Image')
 
         if combined_image:
             image_base64 = image_to_base64(combined_image)
