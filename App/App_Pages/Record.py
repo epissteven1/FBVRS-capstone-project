@@ -69,36 +69,48 @@ def text_to_baybayin_images(text):
                 baybayin_images.append(image_filename)
     return baybayin_images
 
-def render_images_to_image(baybayin_images, output_file, image_dir='App/Image', padding=20):
+def render_images_to_image(baybayin_images, output_file, image_dir='App/Image', padding=20, max_width=800):
     images = []
-    # Ensure the image_dir is an absolute path
     image_dir = os.path.abspath(image_dir)
+    
     for img_name in baybayin_images:
         img_path = os.path.join(image_dir, img_name)
-        print(f"Attempting to load image: {img_path}")  # Debug statement
+        print(f"Attempting to load image: {img_path}")
         try:
             img = Image.open(img_path)
             images.append(img)
         except FileNotFoundError:
             st.error(f"Image file '{img_name}' not found in directory '{image_dir}'.")
-            print(f"FileNotFoundError: Image file '{img_name}' not found in directory '{image_dir}'.")
         except Exception as e:
             st.error(f"Error loading image '{img_name}': {e}")
-            print(f"Exception: Error loading image '{img_name}': {e}")
 
     if not images:
         st.error("No valid images were loaded to create the output image.")
         return None
 
-    total_width = sum(img.width for img in images)
-    max_height = max(img.height for img in images)
+    # Resize images dynamically based on the number of images
+    num_images = len(images)
+    if num_images > 2:
+        # Calculate optimal width for each image to fit within max_width
+        target_width = max_width // num_images
+        resized_images = [img.resize((target_width, int(img.height * (target_width / img.width)))) for img in images]
+    else:
+        resized_images = images  # No resizing for 2 or fewer images
 
+    # Calculate total width and height of the combined image
+    total_width = sum(img.width for img in resized_images) + (padding * (num_images - 1))
+    max_height = max(img.height for img in resized_images)
+
+    # Create a new image with background
     combined_image = Image.new('RGB', (total_width, max_height), 'white')
-    x_offset = 0
-    for img in images:
-        combined_image.paste(img, (x_offset, 0))
-        x_offset += img.width
 
+    # Paste each image into the combined image
+    x_offset = 0
+    for img in resized_images:
+        combined_image.paste(img, (x_offset, 0))
+        x_offset += img.width + padding
+
+    # Add padding around the combined image
     background_width = total_width + 2 * padding
     background_height = max_height + 2 * padding
     background = Image.new('RGB', (background_width, background_height), 'white')
@@ -107,11 +119,10 @@ def render_images_to_image(baybayin_images, output_file, image_dir='App/Image', 
 
     try:
         background.save(output_file)
-        print(f"Output image saved as: {output_file}")  # Debug statement
+        print(f"Output image saved as: {output_file}")
         return background
     except Exception as e:
         st.error(f"Error saving output image: {e}")
-        print(f"Exception: Error saving output image: {e}")
         return None
 
 def app():
