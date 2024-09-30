@@ -136,7 +136,7 @@ def app():
     with st.sidebar:
         option = option_menu("MENU",
                              menu_list,
-                             icons=['house', 'record', 'sliders', 'chat'],
+                             icons=['house', 'play', 'sliders', 'chat'],
                              menu_icon="app-indicator",
                              default_index=0,  # Set "Home" as the default
                              styles={
