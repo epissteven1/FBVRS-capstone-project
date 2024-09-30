@@ -31,6 +31,7 @@ baybayin_image_mapping = {
 }
 
 
+
 def reduce_noise(audio_data):
     audio_np = np.frombuffer(audio_data.get_raw_data(), dtype=np.int16)
     reduced_noise = nr.reduce_noise(y=audio_np, sr=audio_data.sample_rate)
