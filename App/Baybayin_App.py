@@ -2,15 +2,16 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Filipino-to-Baybayin-Voice-Recognition-System",
-    page_icon="App/App_Images/logo1.png",
+    page_icon="App_Images/iconb.jpg",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
 # Import statements
 import base64
-from App_Pages import Home, AppDescription, Record, Feedback
+from App_Pages import Home, AppDescription, Predict, Record, Feedback
 from streamlit_option_menu import option_menu
+
 
 @st.cache_data
 def get_img_as_base64(file):
@@ -19,7 +20,7 @@ def get_img_as_base64(file):
     return base64.b64encode(data).decode()
 
 
-img = get_img_as_base64("App/App_Images/Sidebar1.png")
+img = get_img_as_base64("App_Images/Sidebar1.png")
 
 # Custom CSS for page styling
 st.markdown(f"""
@@ -28,22 +29,22 @@ st.markdown(f"""
             text-align: center;
             background-color: white;
         }}
-        
+
         .sidebar-content {{
             background-color: #242525;
             color: white;
         }}
       .st-emotion-cache-13k62yr {{
             position: absolute;
-           
+
             color: rgb(193, 231, 247);
             inset: 0px;
             color-scheme: transparent;
             overflow: hidden;
-         
+
         }}
-    
-       
+
+
         footer {{
             visibility: visible;
         }}
@@ -58,12 +59,12 @@ st.markdown(f"""
         [data-testid="stSidebarContent"] {{
         background-image: url("data:image/png;base64,{img}");
         background-position:center;
-        
+
         }}
         [data-testid="stVerticalBlockBorderWrapper"] {{
          background-color: transparent;
         }}
-        
+
         [data-testid="stAppViewBlockContainer"] {{
         background-color: #333333;;
         }}
@@ -73,10 +74,9 @@ st.markdown(f"""
         [data-testid="stHeader"] {{
         background-color: #696969;
         }}
-       
+
     </style>
 """, unsafe_allow_html=True)
-
 
 # JavaScript for toggling the sidebar collapse/expand
 st.markdown("""
@@ -93,7 +93,7 @@ st.markdown("""
             padding: 5px 10px;
             border-radius: 5px;
         }
-        
+
         .toggle-btn:hover {
             background-color: #555;
         }
@@ -130,21 +130,23 @@ st.markdown("""
     <button class="toggle-btn" id="toggle-btn" onclick="toggleSidebar()">&#9776;</button>
 """, unsafe_allow_html=True)
 
+
 # Function to render the app
 def app():
     menu_list = ["Home", "Transcribe", "Description", "Feedback"]
     with st.sidebar:
         option = option_menu("MENU",
                              menu_list,
-                             icons=['house', 'play', 'sliders', 'chat'],
+                             icons=['house', 'record', 'sliders',  'chat'],
                              menu_icon="app-indicator",
-                             default_index=0,  # Set "Home" as the default
+                             default_index=0,
                              styles={
                                  "container": {"padding": "5!important"},
-                                 "icon": {"color": "#b77b82", "font-size": "20px"},
+                                 "icon": {"color": "#b77b82", "font-size": "20px"},  # Adjusted for smaller view
                                  "nav-link": {"font-size": "12px", "text-align": "left", "margin": "0px",
                                               "--hover-color": "#F6E1D3"},
                                  "nav-link-selected": {"background-color": "#00008B"},
+                                 "nav-link-hover": {"background-color": "#f0f0f5"}  # Hover effect
                              })
 
     # Render selected page
@@ -154,7 +156,7 @@ def app():
         Record.app()
     if option == menu_list[2]:
         AppDescription.app()
-    if option == menu_list[3]:
+    if option == menu_list[3:
         Feedback.app()
 
 
