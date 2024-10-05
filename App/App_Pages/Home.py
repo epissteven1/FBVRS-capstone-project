@@ -36,8 +36,8 @@ def app():
                     background-size:cover;
                 }
                  img {
-                    width: 600px!important;
-                    height: 900px!important;
+                    width: 700px!important;
+                    height: 1000px!important;
                     object-fit: fill;
             }
                  @media only screen and (max-width: 600px){
