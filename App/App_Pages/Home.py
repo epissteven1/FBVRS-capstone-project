@@ -1,5 +1,6 @@
 import streamlit as st
 
+
 def app():
     st.empty()
     with st.container():
@@ -25,9 +26,9 @@ def app():
             </body>
         """, unsafe_allow_html=True)
 
-# Directly load and display the image using Streamlit's st.image
-    st.image(image="App/App_Images/dash_logo.png", use_column_width=True)
-    
+    # Directly load and display the image using Streamlit's st.image
+    st.image(image="App_Images/dash_logo.png", use_column_width=True)
+
     st.markdown("""
             <style>
                 [data-testid="stAppViewBlockContainer"] {
@@ -36,8 +37,8 @@ def app():
                     background-size:cover;
                 }
                  img {
-                    width: auto!important;
-                    height: auto!important;
+                    width: auto;
+                    height: auto;
                     object-fit: cover;
             }
                  @media only screen and (max-width: 600px){
@@ -83,6 +84,7 @@ def app():
             <body>
             </body>
     """, unsafe_allow_html=True)
+
 
 if __name__ == '__main__':
     app()
